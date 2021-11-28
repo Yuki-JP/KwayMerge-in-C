@@ -11,3 +11,4 @@ char obs[1008];
 }ITEM_VENDA;
 
 void create(char *archive);
+void merge_sort(ITEM_VENDA *array, int e, int d);
