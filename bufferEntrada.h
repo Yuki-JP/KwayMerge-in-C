@@ -12,3 +12,4 @@ char obs[1008];
 
 void create(char *archive);
 void merge_sort(ITEM_VENDA *array, int e, int d);
+void merge(ITEM_VENDA *array, int first, int final, int secondFinal);
