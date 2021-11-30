@@ -23,34 +23,34 @@ void s_archive(char *archive, ITEM_VENDA *array, int n_registros){
     }
 }
 
-void switchPlaces(int *a, int small, int big,ITEM_VENDA item){  
+void switchPlaces(int *a, int small, int big,ITEM_VENDA item[]){  
     ITEM_VENDA receiver;
 
     int aux = a[big];
     a[big] =  a[small];
     a[small] = aux;
 
-    // receiver.id = item[big].id;
-    // receiver.id_venda = item[big].id_venda;
-    // receiver.data = item[big].data;
-    // receiver.desconto = item[big].desconto;
-    // strcpy(receiver.obs,item[big].obs);
+    receiver.id = item[big].id;
+    receiver.id_venda = item[big].id_venda;
+    receiver.data = item[big].data;
+    receiver.desconto = item[big].desconto;
+    strcpy(receiver.obs,item[big].obs);
 
-    // item[big].id = item[small].id;
-    // item[big].id_venda = item[small].id_venda;
-    // item[big].data = item[small].data;
-    // item[big].desconto = item[small].desconto;
-    // strcpy(item[big].obs,item[small].obs); 
+    item[big].id = item[small].id;
+    item[big].id_venda = item[small].id_venda;
+    item[big].data = item[small].data;
+    item[big].desconto = item[small].desconto;
+    strcpy(item[big].obs,item[small].obs); 
 
-    // item[small].id = item[big].id;
-    // item[small].id_venda = item[big].id_venda;
-    // item[small].data = item[big].data;
-    // item[small].desconto = item[big].desconto;
-    // strcpy(item[small].obs,item[big].obs);
+    item[small].id = item[big].id;
+    item[small].id_venda = item[big].id_venda;
+    item[small].data = item[big].data;
+    item[small].desconto = item[big].desconto;
+    strcpy(item[small].obs,item[big].obs);
 
 };
 
-int partition(int *a, int first, int last, ITEM_VENDA item){
+int partition(int *a, int first, int last, ITEM_VENDA item[]){
     int pivot;
     int yellowLine, purpleLine;
 
@@ -67,7 +67,7 @@ int partition(int *a, int first, int last, ITEM_VENDA item){
 
     return yellowLine + 1;
 }
-void quickSort(int *array,int initial, int final, ITEM_VENDA item){
+void quickSort(int *array,int initial, int final, ITEM_VENDA item[]){
     int pointer;
 
     if( initial < final ) {
@@ -101,7 +101,7 @@ void create(char *archive){
             }
 
 
-            quickSort(arrayToquick,0,LIMIT,toSave[LIMIT]);
+            quickSort(arrayToquick,0,LIMIT,toSave);
             s_archive(nameDefiner,&toSave,LIMIT);
             numberOfBuffer = 0;
         }
@@ -119,10 +119,10 @@ int main(){
     FILE *archiveToRead = fopen("testeTemp1.txt","r");
     create("teste.dat");
 
-    for(int h = 0; h < 10;h++){
-        int readed = fread(&toSave[numberOfBuffer],sizeof(ITEM_VENDA),1,archiveToRead);
-        printf("id = %d\n", toSave[h].id);
-    }
+    // for(int h = 0; h < 10;h++){
+    //     int readed = fread(&toSave[numberOfBuffer],sizeof(ITEM_VENDA),1,archiveToRead);
+    //     printf("id = %d\n", toSave[h].id);
+    // }
     // for(int i = 0; i < 100; i++){
     //     int readed = fread(&tester[i],sizeof(ITEM_VENDA),1,"Temp1.txt");
     //     printf("tester[i].id = %d\n",i,tester[i].id);
