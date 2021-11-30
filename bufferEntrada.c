@@ -34,7 +34,8 @@ void create(char *archive){
 
 void merge_sort(ITEM_VENDA *array, int e, int d){
     int media;
-    //printf("Testezinho = %d\n",array[10].id);
+    printf("Testezinho = %d\n",array[10].id);
+    
     if(e<d){
        // printf("Teste array = %d\n", array[20].id);
         media = (e+d)/2;
