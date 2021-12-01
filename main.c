@@ -26,6 +26,7 @@ void s_archive(char *archive, ITEM_VENDA *array, int n_registros){
 void switchPlaces(int *a, int small, int big,ITEM_VENDA item[]){  
     ITEM_VENDA receiver;
 
+
     int aux = a[big];
     a[big] =  a[small];
     a[small] = aux;
@@ -42,11 +43,12 @@ void switchPlaces(int *a, int small, int big,ITEM_VENDA item[]){
     item[big].desconto = item[small].desconto;
     strcpy(item[big].obs,item[small].obs); 
 
-    item[small].id = item[big].id;
-    item[small].id_venda = item[big].id_venda;
-    item[small].data = item[big].data;
-    item[small].desconto = item[big].desconto;
-    strcpy(item[small].obs,item[big].obs);
+    item[small].id = receiver.id;
+    item[small].id_venda = receiver.id_venda;
+    item[small].data = receiver.data;
+    item[small].desconto = receiver.desconto;
+    strcpy(item[small].obs,receiver.obs);
+
 
 };
 
@@ -99,17 +101,42 @@ void create(char *archive){
             for(int y = 0; y < LIMIT;y++){
                 arrayToquick[y] = toSave[y].id;
             }
+            for(int i=0; i<10; i++){
+                printf("id %d, data %d, id_venda %d, desconto %.1f\n", toSave[i].id, toSave[i].data, toSave[i].id_venda, toSave[i].desconto);
+            }   
 
-
-            quickSort(arrayToquick,0,LIMIT,toSave);
+            quickSort(arrayToquick,0,LIMIT - 1,toSave);
             s_archive(nameDefiner,&toSave,LIMIT);
             numberOfBuffer = 0;
         }
-        //printf("Testezinho = %d\n",toSave[i].id);
+        printf("Testezinho = %d\n",toSave[i].id);
         i++;
     }
+
+    if(numberOfBuffer > 0){ //caso sobre alguma struct
+        archiveNumber++;
+        sprintf(nameDefiner,"testeTemp%d.txt",archiveNumber);
+
+        for(int y = 0; y < numberOfBuffer;y++){
+            arrayToquick[y] = toSave[y].id;
+        }
+
+        quickSort(arrayToquick,0,LIMIT - 1,toSave);
+        s_archive(nameDefiner,&toSave,LIMIT);
+        numberOfBuffer = 0;
+    }
+
+    printf("*******************************\n");
+
+    for(int i=0; i<10; i++){
+        printf("id %d, data %d, id_venda %d, desconto %.1f\n", toSave[i].id, toSave[i].data, toSave[i].id_venda, toSave[i].desconto);
+    }
+    
     //fclose(archiveToRead);
+
 }
+
+
 
 
 int main(){
@@ -119,14 +146,7 @@ int main(){
     FILE *archiveToRead = fopen("testeTemp1.txt","r");
     create("teste.dat");
 
-    // for(int h = 0; h < 10;h++){
-    //     int readed = fread(&toSave[numberOfBuffer],sizeof(ITEM_VENDA),1,archiveToRead);
-    //     printf("id = %d\n", toSave[h].id);
-    // }
-    // for(int i = 0; i < 100; i++){
-    //     int readed = fread(&tester[i],sizeof(ITEM_VENDA),1,"Temp1.txt");
-    //     printf("tester[i].id = %d\n",i,tester[i].id);
-    // }
+
 }
 
 //aaa
