@@ -42,7 +42,14 @@ void merge(char *archiveName, int qttArch, int size){
         dataReceive(auxStruct,size);
     }
 
+    while(searchSmaller(archiveName, qttArch, size, &small) == 1){
+        buffer[qttBuffer] = small;
+        qttBuffer++;
 
+        if(qttBuffer == size){
+
+        }
+    }
     
 
 }
@@ -65,8 +72,11 @@ int searchSmaller(ARCHIVECONTROL* archive, int qttArchive, int K, int* small){
         *small = archive[found].buffer[archive[found].position];
         archive[found].position++;
         if(archive[found].position == archive[found].size)
-            dataReceive(archive[found], K);//tem que arrumaar
-    }
+            dataReceive(&archive[found], K);
+        return 1;
+    
+    }else
+        return 0;
 }
 
 void dataReceive(ARCHIVECONTROL *control, int size){
