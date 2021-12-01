@@ -5,12 +5,7 @@
 #include<limits.h>
 #define LIMIT 10
 #include<string.h>
-typedef struct ARCHIVECONTROL{
-    FILE *archive;
-    int position;
-    int size;
-    ITEM_VENDA *buffer;
-}ARCHIVECONTROL;
+
 
 typedef struct ITEM_VENDA{
 uint32_t id;
@@ -20,12 +15,21 @@ float desconto;
 char obs[1008];
 }ITEM_VENDA;
 
+typedef struct ARCHIVECONTROL{
+    FILE *archive;
+    int position;
+    int size;
+    ITEM_VENDA *buffer;
+}ARCHIVECONTROL;
+
 ////////////////////////////buffer Saída abaixo/////////////////////
 void merge(char *archiveName, int qttArch, int size){
     ARCHIVECONTROL *auxStruct;
     char nameDefiner[30];
     int *buffer = (int*) malloc(size*sizeof(int));
     int size = LIMIT / (qttArch+1);
+    int small = 0;
+    int qttBuffer = 0;
 
     auxStruct = (ARCHIVECONTROL*)malloc(qttArch*sizeof(ARCHIVECONTROL));
 
@@ -38,6 +42,31 @@ void merge(char *archiveName, int qttArch, int size){
         dataReceive(auxStruct,size);
     }
 
+
+    
+
+}
+
+int searchSmaller(ARCHIVECONTROL* archive, int qttArchive, int K, int* small){
+    int found = -1;
+
+    for(int i=0; i<qttArchive; i++){
+        if(archive[i].position < archive[i].size){
+            if(found == -1)
+                found = i;
+            else{
+                if(archive[i].buffer[archive[i].position] < archive[found].buffer[archive[found].position])
+                    found = i;
+            }
+        }
+    }
+
+    if(found != -1){
+        *small = archive[found].buffer[archive[found].position];
+        archive[found].position++;
+        if(archive[found].position == archive[found].size)
+            dataReceive(archive[found], K);//tem que arrumaar
+    }
 }
 
 void dataReceive(ARCHIVECONTROL *control, int size){
@@ -59,7 +88,7 @@ void dataReceive(ARCHIVECONTROL *control, int size){
             control->archive = NULL;
             break;
         }
-    }   
+    }
     
 }
 
