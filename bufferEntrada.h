@@ -13,3 +13,7 @@ char obs[1008];
 void create(char *archive);
 void merge_sort(ITEM_VENDA *array, int e, int d);
 void merge(ITEM_VENDA *array, int first, int final, int secondFinal);
+void s_archive(char *archive, ITEM_VENDA *array, int n_registros);
+void switchPlaces(int *a, int small, int big,ITEM_VENDA item[]);
+int partition(int *a, int first, int last, ITEM_VENDA item[]);
+void quickSort(int *array,int initial, int final, ITEM_VENDA item[]);

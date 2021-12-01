@@ -5,6 +5,12 @@
 #include<limits.h>
 #define LIMIT 10
 #include<string.h>
+typedef struct ARCHIVECONTROL{
+    FILE *archive;
+    int position;
+    int size;
+    ITEM_VENDA *buffer;
+}ARCHIVECONTROL;
 
 typedef struct ITEM_VENDA{
 uint32_t id;
@@ -14,6 +20,50 @@ float desconto;
 char obs[1008];
 }ITEM_VENDA;
 
+////////////////////////////buffer Saída abaixo/////////////////////
+void merge(char *archiveName, int qttArch, int size){
+    ARCHIVECONTROL *auxStruct;
+    char nameDefiner[30];
+    int *buffer = (int*) malloc(size*sizeof(int));
+    int size = LIMIT / (qttArch+1);
+
+    auxStruct = (ARCHIVECONTROL*)malloc(qttArch*sizeof(ARCHIVECONTROL));
+
+    for(int i = 0; i < qttArch; i++){
+        sprintf(nameDefiner,"temp%d.txt",i+1); // Definindo nome pra leitura
+        auxStruct[i].archive = fopen(nameDefiner,"r");
+        auxStruct[i].size = 0;
+        auxStruct[i].position = 0;
+        auxStruct[i].buffer = (ARCHIVECONTROL*)malloc(size*sizeof(ARCHIVECONTROL));
+        dataReceive(auxStruct,size);
+    }
+
+}
+
+void dataReceive(ARCHIVECONTROL *control, int size){
+    int counter;
+
+    if(control->archive == NULL)
+        return;
+
+    control->position = 0;
+    control->size = 0;
+    printf("\nENtei no data Receivw\n");
+    for(counter = 0; counter < size; counter++){
+        if(fread(control->buffer,sizeof(ITEM_VENDA),1,control->archive)){
+            fread(control->buffer,sizeof(ITEM_VENDA),1,control->archive);
+            control->size++;
+        }
+        else{
+            fclose(control->archive);
+            control->archive = NULL;
+            break;
+        }
+    }   
+    
+}
+
+////////////////////////////buffer Entrada abaixo////////////////////////
 void s_archive(char *archive, ITEM_VENDA *array, int n_registros){
     int counter;
     FILE *newArchive = fopen(archive,"a");
@@ -48,8 +98,6 @@ void switchPlaces(int *a, int small, int big,ITEM_VENDA item[]){
     item[small].data = receiver.data;
     item[small].desconto = receiver.desconto;
     strcpy(item[small].obs,receiver.obs);
-
-
 };
 
 int partition(int *a, int first, int last, ITEM_VENDA item[]){
@@ -81,7 +129,7 @@ void quickSort(int *array,int initial, int final, ITEM_VENDA item[]){
 
 void create(char *archive){
     ITEM_VENDA receiver,auxArray[LIMIT];
-    int archiveNumber = 0, numberOfBuffer = 0,i = 0,readed;
+    int archiveNumber = 0, numberOfBuffer = 0,i = 0,readed,counter = 0;
     ITEM_VENDA toSave[LIMIT];// Lembrar que se guardar mais coisa aqui do que ele aguenta vai dar pau
     char *nameDefiner[30]; // O pica ta
     uint32_t arrayToquick[LIMIT];
@@ -93,26 +141,20 @@ void create(char *archive){
 
     while (i != 10){
         readed = fread(&toSave[numberOfBuffer],sizeof(ITEM_VENDA),1,archiveToRead);
+        counter++;
         numberOfBuffer++;
         if(numberOfBuffer == 10){
             archiveNumber++;
             sprintf(nameDefiner,"testeTemp%d.txt",archiveNumber);
-
             for(int y = 0; y < LIMIT;y++){
                 arrayToquick[y] = toSave[y].id;
             }
-            for(int i=0; i<10; i++){
-                printf("id %d, data %d, id_venda %d, desconto %.1f\n", toSave[i].id, toSave[i].data, toSave[i].id_venda, toSave[i].desconto);
-            }   
-
             quickSort(arrayToquick,0,LIMIT - 1,toSave);
             s_archive(nameDefiner,&toSave,LIMIT);
             numberOfBuffer = 0;
         }
-        printf("Testezinho = %d\n",toSave[i].id);
         i++;
     }
-
     if(numberOfBuffer > 0){ //caso sobre alguma struct
         archiveNumber++;
         sprintf(nameDefiner,"testeTemp%d.txt",archiveNumber);
@@ -125,13 +167,8 @@ void create(char *archive){
         s_archive(nameDefiner,&toSave,LIMIT);
         numberOfBuffer = 0;
     }
-
-    printf("*******************************\n");
-
-    for(int i=0; i<10; i++){
-        printf("id %d, data %d, id_venda %d, desconto %.1f\n", toSave[i].id, toSave[i].data, toSave[i].id_venda, toSave[i].desconto);
-    }
-    
+    int size = LIMIT / (counter+1);
+    merge(archive,counter,size);
     //fclose(archiveToRead);
 
 }
